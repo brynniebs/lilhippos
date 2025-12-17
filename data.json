@@ -1,0 +1,28 @@
+{
+  "events": [
+    {"id": 1, "date": "Oct 25 · 9am-3pm", "title": "Pinckneyville Mardi Gras", "city": "Pinckneyville, IL", "map": "https://www.google.com/maps/place/Pinckneyville,+IL"},
+    {"id": 2, "date": "Nov 1-2 · Sat 9am-4pm · Sun 10am-3pm", "title": "Fox Senior High School", "city": "Arnold, MO", "map": "https://www.google.com/maps?q=fox+senior+high+school+arnold+mo"},
+    {"id": 3, "date": "Nov 28-30 · Fri 3pm-8pm · Sat 10am-4pm · Sun 10am-4pm", "title": "Kay Weber Art & Craft Show", "city": "Belleville, IL", "map": "https://www.google.com/maps?q=200+S+Belt+E,+Belleville,+IL+62220"}
+  ],
+  "gallery": [
+    "assets/img/dog1.jpg",
+    "assets/img/dog2.jpg",
+    "assets/img/dog3.png",
+    "assets/img/dog4.jpg"
+  ],
+  "content": {
+    "heroHeadline": "Handmade pet accessories that show off their personality.",
+    "heroSubtitle": "Durable, comfy, and irresistibly cute—crafted in small batches with love.",
+    "heroFeatures": ["Handmade Quality", "Comfort-First Fit", "Personalized Options"],
+    "valueCards": [
+      {"title": "Built to romp", "text": "Everyday-tough materials with smooth finishes for sensitive pups."},
+      {"title": "Made with care", "text": "Each piece is assembled by hand and inspected before it ships."},
+      {"title": "Sized just right", "text": "From tiny necks to blocky heads - flexible sizing covered."},
+      {"title": "Personal touches", "text": "Add name beads or pick your bead palette for a one-of-a-kind look."}
+    ],
+    "featuredTitle": "Featured Favorites",
+    "featuredText": "Beaded collars, bowties, bandanas, and shirt collars designed to turn heads at the dog park.",
+    "aboutStory": "Brynnie B's started with one very loved dog and a hobby for beadwork that got out of hand—in the best way. Today we design and handcraft small-batch accessories that are comfortable to wear and made to last.",
+    "aboutValues": ["Comfort and safety come first.", "Personalization is part of the fun.", "We source thoughtfully and assemble by hand."]
+  }
+}

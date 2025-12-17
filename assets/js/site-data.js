@@ -9,7 +9,7 @@
     // ===== CONFIGURATION =====
     // Update this BIN_ID to match cloud-sync.js
     const CONFIG = {
-        BIN_ID: 'YOUR_BIN_ID_HERE',  // Replace with your npoint.io bin ID
+        BIN_ID: '2dfb970277fcb31f7f16',  // npoint.io bin ID
         BASE_URL: 'https://api.npoint.io'
     };
 
