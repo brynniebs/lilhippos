@@ -1,26 +1,24 @@
 /**
  * Site Data Loader - Brynnie B's
- * Loads data from JSONbin.io cloud storage for all visitors
- * 
- * This script must have the BIN_ID configured after the first admin save.
+ * Loads data from npoint.io cloud storage for all visitors
  */
 
 (function () {
     'use strict';
 
     // ===== CONFIGURATION =====
-    // After the admin saves data for the first time, update this BIN_ID
+    // Update this BIN_ID to match cloud-sync.js
     const CONFIG = {
-        BIN_ID: '',  // Will be set after first admin save
-        BASE_URL: 'https://api.jsonbin.io/v3'
+        BIN_ID: 'YOUR_BIN_ID_HERE',  // Replace with your npoint.io bin ID
+        BASE_URL: 'https://api.npoint.io'
     };
 
     // Default data (fallback if cloud fails)
     const DEFAULTS = {
         events: [
-            { id: 1, date: 'Oct 25 · 9am–3pm', title: 'Pinckneyville Mardi Gras', city: 'Pinckneyville, IL', map: '#' },
-            { id: 2, date: 'Nov 1–2 · Sat 9am–4pm · Sun 10am–3pm', title: 'Fox Senior High School', city: 'Arnold, MO', map: '#' },
-            { id: 3, date: 'Nov 28–30 · Fri 3pm–8pm · Sat 10am–4pm · Sun 10am–4pm', title: 'Kay Weber Art & Craft Show', city: 'Belleville, IL', map: '#' }
+            { id: 1, date: 'Oct 25 · 9am-3pm', title: 'Pinckneyville Mardi Gras', city: 'Pinckneyville, IL', map: '#' },
+            { id: 2, date: 'Nov 1-2 · Sat 9am-4pm · Sun 10am-3pm', title: 'Fox Senior High School', city: 'Arnold, MO', map: '#' },
+            { id: 3, date: 'Nov 28-30 · Fri 3pm-8pm · Sat 10am-4pm', title: 'Kay Weber Art & Craft Show', city: 'Belleville, IL', map: '#' }
         ],
         gallery: [
             'assets/img/dog1.jpg',
@@ -47,21 +45,18 @@
 
     // Load data from cloud
     async function loadCloudData() {
-        if (!CONFIG.BIN_ID) {
+        if (!CONFIG.BIN_ID || CONFIG.BIN_ID === 'YOUR_BIN_ID_HERE') {
             console.log('SiteData: No BIN_ID configured, using defaults');
             return null;
         }
 
         try {
-            const response = await fetch(`${CONFIG.BASE_URL}/b/${CONFIG.BIN_ID}/latest`, {
-                headers: { 'X-Access-Key': '$2a$10$placeholder' }  // Public bins don't need real key
-            });
-
+            const response = await fetch(`${CONFIG.BASE_URL}/${CONFIG.BIN_ID}`);
             if (!response.ok) throw new Error('Failed to load');
 
-            const result = await response.json();
+            const data = await response.json();
             console.log('SiteData: Loaded from cloud');
-            return result.record;
+            return data;
         } catch (error) {
             console.log('SiteData: Cloud load failed, using defaults');
             return null;
