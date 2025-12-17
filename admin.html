@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,9 +8,11 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
+
 <body>
 
   <!-- Login Screen -->
@@ -28,7 +31,7 @@
 
   <!-- Admin Dashboard -->
   <div class="admin-dashboard" id="adminDashboard">
-    
+
     <!-- Header -->
     <header class="admin-header">
       <div class="header-left">
@@ -63,7 +66,8 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="eventDate">Date & Time</label>
-                <input type="text" id="eventDate" name="eventDate" placeholder="e.g., Nov 28–30 · Fri 3pm–8pm" required />
+                <input type="text" id="eventDate" name="eventDate" placeholder="e.g., Nov 28–30 · Fri 3pm–8pm"
+                  required />
               </div>
               <div class="form-group">
                 <label for="eventTitle">Event Name</label>
@@ -110,7 +114,7 @@
 
       <!-- CONTENT PANEL -->
       <div class="tab-panel" id="contentPanel">
-        
+
         <!-- Hero Section -->
         <div class="admin-card">
           <h3>🏠 Home Page - Hero Section</h3>
@@ -124,7 +128,8 @@
           </div>
           <div class="form-group">
             <label for="contentHeroFeatures">Feature Bullets (one per line)</label>
-            <textarea id="contentHeroFeatures" rows="3" placeholder="Handmade Quality&#10;Comfort-First Fit&#10;Personalized Options"></textarea>
+            <textarea id="contentHeroFeatures" rows="3"
+              placeholder="Handmade Quality&#10;Comfort-First Fit&#10;Personalized Options"></textarea>
           </div>
         </div>
 
@@ -169,6 +174,8 @@
   <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
 
+  <script src="assets/js/cloud-sync.js"></script>
   <script src="assets/js/admin.js"></script>
 </body>
+
 </html>

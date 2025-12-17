@@ -55,22 +55,46 @@
     const $ = id => document.getElementById(id);
 
     // ===== Initialization =====
-    function init() {
-        loadData();
+    async function init() {
         setupEventListeners();
+        await loadData();
         checkAuth();
     }
 
-    function loadData() {
+    async function loadData() {
+        // Try to load from cloud first
+        if (window.CloudSync && CloudSync.isConfigured()) {
+            const cloudData = await CloudSync.load();
+            if (cloudData) {
+                events = cloudData.events || [...DEFAULT_EVENTS];
+                gallery = cloudData.gallery || [...DEFAULT_GALLERY];
+                content = cloudData.content || { ...DEFAULT_CONTENT };
+                // Also save to localStorage as backup
+                localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
+                localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+                localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(content));
+                return;
+            }
+        }
+        // Fallback to localStorage
         events = JSON.parse(localStorage.getItem(STORAGE_KEYS.EVENTS)) || [...DEFAULT_EVENTS];
         gallery = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY)) || [...DEFAULT_GALLERY];
         content = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTENT)) || { ...DEFAULT_CONTENT };
     }
 
-    function saveData() {
+    async function saveData() {
+        // Save to localStorage first (instant)
         localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
         localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(content));
+
+        // Then save to cloud for everyone
+        if (window.CloudSync && CloudSync.isConfigured()) {
+            const success = await CloudSync.save({ events, gallery, content });
+            if (success) {
+                console.log('Data synced to cloud!');
+            }
+        }
     }
 
     // ===== Authentication =====
