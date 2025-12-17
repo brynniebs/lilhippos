@@ -1,15 +1,5 @@
-// Load events from localStorage (admin-editable) or use defaults
-window.BB_EVENTS = (function () {
-  const stored = localStorage.getItem('BB_EVENTS');
-  if (stored) {
-    try { return JSON.parse(stored); } catch (e) { }
-  }
-  return [
-    { date: 'Oct 25 · 9am–3pm', title: 'Pinckneyville Mardi Gras', city: 'Pinckneyville, IL', map: 'https://www.google.com/maps/place/4+S+Walnut+St,+Pinckneyville,+IL+62274' },
-    { date: 'Nov 1–2 · Sat 9am–4pm · Sun 10am–3pm', title: 'Fox Senior High School', city: 'Arnold, MO', map: 'https://www.google.com/maps?q=fox+senior+high+school+arnold+mo' },
-    { date: 'Nov 28–30 · Fri 3pm–8pm · Sat 10am–4pm · Sun 10am–4pm', title: 'Kay Weber Art & Craft Show', city: 'Belleville, IL', map: 'https://www.google.com/maps?q=200+S+Belt+E,+Belleville,+IL+62220' }
-  ];
-})();
+// Events rendering for Brynnie B's
+// Waits for cloud data from site-data.js before rendering
 
 window.renderEvents = function () {
   const root = document.getElementById('eventsRoot');
@@ -24,6 +14,17 @@ window.renderEvents = function () {
   `).join('');
 };
 
-// Auto-run when possible
-if (document.readyState !== 'loading') window.renderEvents();
-else document.addEventListener('DOMContentLoaded', window.renderEvents);
+// Wait for cloud data to load, then render
+document.addEventListener('siteDataReady', function () {
+  window.renderEvents();
+});
+
+// Also try rendering on DOMContentLoaded as fallback
+document.addEventListener('DOMContentLoaded', function () {
+  // Give site-data.js a moment to load, then render
+  setTimeout(function () {
+    if (window.BB_EVENTS) {
+      window.renderEvents();
+    }
+  }, 100);
+});
