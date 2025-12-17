@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel • Brynnie B's</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <img src="assets/img/Brynnie-Banner.png" alt="Brynnie B's" />
+      <h1>Admin Panel</h1>
+      <p>Enter your password to continue</p>
+      <form id="loginForm">
+        <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+        <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" required />
+        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div class="admin-dashboard" id="adminDashboard">
+    
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="header-left">
+        <img src="assets/img/Brynnie-Banner.png" alt="Brynnie B's" />
+        <h2>Admin Panel</h2>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" id="exportBtn">📤 Export Data</button>
+        <label class="btn btn-secondary" style="cursor:pointer;">
+          📥 Import Data
+          <input type="file" accept=".json" id="importInput" style="display:none;" />
+        </label>
+        <button class="btn btn-danger" id="logoutBtn">Logout</button>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="admin-tabs">
+      <button class="tab-btn active" data-tab="eventsPanel">📅 Events</button>
+      <button class="tab-btn" data-tab="galleryPanel">🖼️ Gallery</button>
+      <button class="tab-btn" data-tab="contentPanel">✏️ Site Content</button>
+    </nav>
+
+    <!-- Content Area -->
+    <div class="admin-content">
+
+      <!-- EVENTS PANEL -->
+      <div class="tab-panel active" id="eventsPanel">
+        <div class="admin-card">
+          <h3 id="eventFormTitle">Add New Event</h3>
+          <form id="eventForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="eventDate">Date & Time</label>
+                <input type="text" id="eventDate" name="eventDate" placeholder="e.g., Nov 28–30 · Fri 3pm–8pm" required />
+              </div>
+              <div class="form-group">
+                <label for="eventTitle">Event Name</label>
+                <input type="text" id="eventTitle" name="eventTitle" placeholder="e.g., Holiday Craft Fair" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="eventCity">Location</label>
+                <input type="text" id="eventCity" name="eventCity" placeholder="e.g., Belleville, IL" required />
+              </div>
+              <div class="form-group">
+                <label for="eventMap">Google Maps Link (optional)</label>
+                <input type="url" id="eventMap" name="eventMap" placeholder="https://..." />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="eventSubmitBtn">Add Event</button>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <h3>Your Events</h3>
+          <div class="item-list" id="eventsList"></div>
+        </div>
+      </div>
+
+      <!-- GALLERY PANEL -->
+      <div class="tab-panel" id="galleryPanel">
+        <div class="admin-card">
+          <h3>Upload Images</h3>
+          <div class="upload-area" id="uploadArea">
+            <input type="file" id="galleryUpload" accept="image/*" multiple />
+            <div class="upload-icon">📷</div>
+            <p><strong>Click to upload</strong> or drag and drop</p>
+            <p style="font-size:0.85rem;color:#999;margin-top:8px;">PNG, JPG up to 5MB</p>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h3>Gallery Images</h3>
+          <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+      </div>
+
+      <!-- CONTENT PANEL -->
+      <div class="tab-panel" id="contentPanel">
+        
+        <!-- Hero Section -->
+        <div class="admin-card">
+          <h3>🏠 Home Page - Hero Section</h3>
+          <div class="form-group">
+            <label for="contentHeroHeadline">Main Headline</label>
+            <input type="text" id="contentHeroHeadline" />
+          </div>
+          <div class="form-group">
+            <label for="contentHeroSubtitle">Subtitle</label>
+            <textarea id="contentHeroSubtitle" rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="contentHeroFeatures">Feature Bullets (one per line)</label>
+            <textarea id="contentHeroFeatures" rows="3" placeholder="Handmade Quality&#10;Comfort-First Fit&#10;Personalized Options"></textarea>
+          </div>
+        </div>
+
+        <!-- Value Cards -->
+        <div class="admin-card">
+          <h3>🏠 Home Page - Value Cards</h3>
+          <div id="valueCardsEditor"></div>
+        </div>
+
+        <!-- Featured Section -->
+        <div class="admin-card">
+          <h3>🏠 Home Page - Featured Section</h3>
+          <div class="form-group">
+            <label for="contentFeaturedTitle">Section Title</label>
+            <input type="text" id="contentFeaturedTitle" />
+          </div>
+          <div class="form-group">
+            <label for="contentFeaturedText">Section Description</label>
+            <textarea id="contentFeaturedText" rows="2"></textarea>
+          </div>
+        </div>
+
+        <!-- About Page -->
+        <div class="admin-card">
+          <h3>📖 About Page</h3>
+          <div class="form-group">
+            <label for="contentAboutStory">Our Story</label>
+            <textarea id="contentAboutStory" rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="contentAboutValues">What Matters to Us (one per line)</label>
+            <textarea id="contentAboutValues" rows="3"></textarea>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="saveContentBtn" style="width:100%;">💾 Save All Content Changes</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

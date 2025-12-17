@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gallery • Brynnie B’s</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html"><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s" height="48" /></a>
+      <nav class="main-nav" aria-label="Primary">
+        <a href="index.html" class="">Home</a>
+        <a href="shop.html" class="">Shop</a>
+        <a href="custom.html" class="">Custom Orders</a>
+        <a href="events.html" class="">Events</a>
+        <a href="gallery.html" class="active">Gallery</a>
+        <a href="about.html" class="">About</a>
+        <a href="contact.html" class="">Contact</a>
+        <a href="cart.html" class=" cart-link" data-cart-count>Cart (0)</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  
+<main class="container">
+  <h1>Gallery</h1>
+  <p class="lead">Wiggles, smiles, and lots of bead sparkle.</p>
+  <div id="galleryRoot" class="masonry"></div>
+</main>
+
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s" height="40" /></div>
+      <div class="small">© <span id="year"></span> Brynnie B’s Boutique & More</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/gallery.js"></script>
+<script>window.renderGallery && window.renderGallery();</script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>

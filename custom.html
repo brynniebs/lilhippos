@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Custom Orders • Brynnie B’s</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html"><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s" height="48" /></a>
+      <nav class="main-nav" aria-label="Primary">
+        <a href="index.html" class="">Home</a>
+        <a href="shop.html" class="">Shop</a>
+        <a href="custom.html" class="active">Custom Orders</a>
+        <a href="events.html" class="">Events</a>
+        <a href="gallery.html" class="">Gallery</a>
+        <a href="about.html" class="">About</a>
+        <a href="contact.html" class="">Contact</a>
+        <a href="cart.html" class=" cart-link" data-cart-count>Cart (0)</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  
+<main class="container">
+  <h1>Custom Orders</h1>
+  <p class="lead">Tell us what you have in mind—we’ll follow up by email to confirm details and quote.</p>
+  <form id="customForm" class="form-card">
+    <div class="grid-2">
+      <label> Name *<input type="text" name="name" required placeholder="Your name" /></label>
+      <label> Email *<input type="email" name="email" required placeholder="you@example.com" /></label>
+    </div>
+    <div class="grid-3">
+      <label> Pet Name <input type="text" name="pet" placeholder="Brynnie" /></label>
+      <label> Size <select name="size"><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option></select></label>
+      <label> Hardware <select name="hardware"><option>Silver</option><option>Gold</option><option>Rose Gold</option></select></label>
+    </div>
+    <label> Color/Bead Ideas <textarea name="colors" rows="4" placeholder="Tell us your palette or upload photos below"></textarea></label>
+    <label> Reference Photo <input type="file" name="photo" accept="image/*" /></label>
+    <button class="btn btn-primary" type="submit">Send Request</button>
+    <p class="small mute">We’ll reply within 1–2 business days.</p>
+  </form>
+</main>
+
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s" height="40" /></div>
+      <div class="small">© <span id="year"></span> Brynnie B’s Boutique & More</div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("customForm").addEventListener("submit",function(e){e.preventDefault();const fd=new FormData(e.target);const d=Object.fromEntries(fd.entries());const subject=encodeURIComponent("Custom Order Request");const body=encodeURIComponent(`Name: ${d.name}
+Email: ${d.email}
+Pet: ${d.pet||""}
+Size: ${d.size||""}
+Hardware: ${d.hardware||""}
+Colors: ${d.colors||""}`);location.href=`mailto:?subject=${subject}&body=${body}`;});</script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>

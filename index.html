@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brynnie B’s • Handmade Pet Accessories</title>
+  <meta name="description" content="Handmade collars, bowties, bandanas & more—built with love for everyday adventures." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s Boutique & More" height="48" />
+      </a>
+      <nav class="main-nav" aria-label="Primary">
+        <a href="index.html" class="active">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="custom.html">Custom Orders</a>
+        <a href="events.html">Events</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html" class="cart-link" data-cart-count>Cart (0)</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <h1>Handmade pet accessories that show off their personality.</h1>
+          <p class="lead">Durable, comfy, and irresistibly cute—crafted in small batches with love.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="shop.html">Shop Now</a>
+            <a class="btn btn-outline" href="custom.html">Start a Custom Order</a>
+          </div>
+          <ul class="features-inline" role="list">
+            <li>Handmade Quality</li>
+            <li>Comfort‑First Fit</li>
+            <li>Personalized Options</li>
+          </ul>
+        </div>
+        <div class="hero-sticker">
+          <img src="assets/img/IMG_20250918_220658-removebg-preview.png" alt="Happy pup wearing beaded collar" />
+        </div>
+      </div>
+      <div class="paw-bg" aria-hidden="true"></div>
+    </section>
+
+    <section class="value-cards container">
+      <div class="card">
+        <h3>Built to romp</h3>
+        <p>Everyday‑tough materials with smooth finishes for sensitive pups.</p>
+      </div>
+      <div class="card">
+        <h3>Made with care</h3>
+        <p>Each piece is assembled by hand and inspected before it ships.</p>
+      </div>
+      <div class="card">
+        <h3>Sized just right</h3>
+        <p>From tiny necks to blocky heads—we’ve got flexible sizing covered.</p>
+      </div>
+      <div class="card">
+        <h3>Personal touches</h3>
+        <p>Add name beads or pick your bead palette for a one‑of‑a‑kind look.</p>
+      </div>
+    </section>
+
+    <section class="container split">
+      <div>
+        <h2>Featured Favorites</h2>
+        <p>Beaded collars, bowties, bandanas, and shirt collars designed to turn heads at the dog park.</p>
+        <a class="btn btn-primary" href="shop.html">Browse the Shop</a>
+      </div>
+      <div class="promo-grid">
+        <a class="promo" href="shop.html#beaded-collars"><span>Beaded Collars</span></a>
+        <a class="promo" href="shop.html#bowties"><span>Bowties</span></a>
+        <a class="promo" href="shop.html#bandanas"><span>Bandanas</span></a>
+        <a class="promo" href="shop.html#shirt-collars"><span>Shirt Collars</span></a>
+      </div>
+    </section>
+
+    <section class="events-preview">
+      <div class="container">
+        <h2>Where we’ll be next</h2>
+        <div class="events-row" id="eventsPreview"></div>
+        <div class="center"><a class="btn btn-outline" href="events.html">See all events</a></div>
+      </div>
+    </section>
+
+    <section class="container gallery-preview">
+      <h2>Happy customers</h2>
+      <div class="grid-3" id="galleryPreview"></div>
+      <div class="center"><a class="btn btn-outline" href="gallery.html">View Gallery</a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s" height="40" />
+        <p class="small">Handmade in small batches. Built for wags.</p>
+      </div>
+      <nav aria-label="Footer">
+        <a href="shop.html">Shop</a>
+        <a href="custom.html">Custom Orders</a>
+        <a href="events.html">Events</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="small">© <span id="year"></span> Brynnie B’s Boutique & More. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/events.js"></script>
+  <script src="assets/js/gallery.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>
