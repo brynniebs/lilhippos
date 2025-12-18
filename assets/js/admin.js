@@ -14,7 +14,8 @@
         GALLERY: 'BB_GALLERY',
         CONTENT: 'BB_CONTENT',
         PRODUCTS: 'BB_PRODUCTS',
-        ORDERS: 'BB_ORDERS'
+        ORDERS: 'BB_ORDERS',
+        CATEGORIES: 'BB_CATEGORIES'
     };
 
     // ===== Default Data =====
@@ -57,12 +58,20 @@
 
     const DEFAULT_ORDERS = [];
 
+    const DEFAULT_CATEGORIES = [
+        { id: 'beaded-collars', name: 'Beaded Collars' },
+        { id: 'bowties', name: 'Bowties' },
+        { id: 'bandanas', name: 'Bandanas' },
+        { id: 'shirt-collars', name: 'Shirt Collars' }
+    ];
+
     // ===== State =====
     let events = [];
     let gallery = [];
     let content = {};
     let products = [];
     let orders = [];
+    let categories = [];
     let editingEventId = null;
     let editingProductId = null;
     let salesChart = null;
@@ -87,12 +96,14 @@
                 content = cloudData.content || { ...DEFAULT_CONTENT };
                 products = cloudData.products || [...DEFAULT_PRODUCTS];
                 orders = cloudData.orders || [...DEFAULT_ORDERS];
+                categories = cloudData.categories || [...DEFAULT_CATEGORIES];
                 // Also save to localStorage as backup
                 localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
                 localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
                 localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(content));
                 localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
                 localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+                localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
                 return;
             }
         }
@@ -102,6 +113,7 @@
         content = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTENT)) || { ...DEFAULT_CONTENT };
         products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [...DEFAULT_PRODUCTS];
         orders = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS)) || [...DEFAULT_ORDERS];
+        categories = JSON.parse(localStorage.getItem(STORAGE_KEYS.CATEGORIES)) || [...DEFAULT_CATEGORIES];
     }
 
     async function saveData() {
@@ -111,10 +123,11 @@
         localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(content));
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
         localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+        localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
 
         // Then save to cloud for everyone
         if (window.CloudSync && CloudSync.isConfigured()) {
-            const success = await CloudSync.save({ events, gallery, content, products, orders });
+            const success = await CloudSync.save({ events, gallery, content, products, orders, categories });
             if (success) {
                 console.log('Data synced to cloud!');
             }
@@ -158,6 +171,7 @@
         renderProducts();
         renderOrders();
         renderDashboard();
+        renderCategories();
     }
 
     // ===== Tab Navigation =====
@@ -396,6 +410,54 @@
         </div>
       </div>
     `).join('');
+    }
+
+    // ===== CATEGORY MANAGEMENT =====
+    function renderCategories() {
+        const select = $('productCategory');
+        if (!select) return;
+
+        select.innerHTML = categories.map(c =>
+            `<option value="${c.id}">${c.name}</option>`
+        ).join('');
+    }
+
+    function addCategory() {
+        const input = $('newCategoryInput');
+        const name = input.value.trim();
+        if (!name) return;
+
+        const id = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        if (categories.some(c => c.id === id)) {
+            showToast('Category already exists!');
+            return;
+        }
+
+        categories.push({ id, name });
+        saveData();
+        renderCategories();
+        input.value = '';
+        showToast('Category added!');
+    }
+
+    function deleteCategory() {
+        const select = $('productCategory');
+        const selectedId = select.value;
+        if (!selectedId) return;
+
+        // Check if any products use this category
+        const productsUsingCategory = products.filter(p => p.category === selectedId);
+        if (productsUsingCategory.length > 0) {
+            alert(`Cannot delete: ${productsUsingCategory.length} product(s) use this category. Change their category first.`);
+            return;
+        }
+
+        if (!confirm('Delete this category?')) return;
+
+        categories = categories.filter(c => c.id !== selectedId);
+        saveData();
+        renderCategories();
+        showToast('Category deleted!');
     }
 
     // Product colors state
@@ -794,7 +856,9 @@
         editProduct,
         deleteProduct,
         addColor,
-        removeColor
+        removeColor,
+        addCategory,
+        deleteCategory
     };
 
     // Initialize on DOM ready
