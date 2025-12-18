@@ -460,6 +460,61 @@
         showToast('Category deleted!');
     }
 
+    // ===== VARIABLE PRICING =====
+    function toggleVariablePricing() {
+        const isEnabled = $('variablePricingToggle').checked;
+        const container = $('sizePricesContainer');
+
+        if (isEnabled) {
+            container.style.display = 'block';
+            updateSizePrices();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function updateSizePrices() {
+        const container = $('sizePricesContainer');
+        if (!container) return;
+
+        const isEnabled = $('variablePricingToggle')?.checked;
+        if (!isEnabled) return;
+
+        // Get checked sizes
+        const checkedSizes = Array.from(document.querySelectorAll('input[name="sizes"]:checked'))
+            .map(cb => cb.value);
+
+        // Get base price
+        const basePrice = parseFloat($('productPrice').value) || 0;
+
+        // Build price inputs for each size
+        container.innerHTML = checkedSizes.map(size => {
+            const existingInput = container.querySelector(`input[data-size="${size}"]`);
+            const currentValue = existingInput ? existingInput.value : basePrice.toFixed(2);
+            return `
+                <div class="size-price-row">
+                    <label>${size}</label>
+                    <span>$</span>
+                    <input type="number" step="0.01" min="0" data-size="${size}" value="${currentValue}" placeholder="${basePrice.toFixed(2)}">
+                </div>
+            `;
+        }).join('');
+
+        if (checkedSizes.length === 0) {
+            container.innerHTML = '<p class="small mute">Select sizes above to set prices.</p>';
+        }
+    }
+
+    function getSizePrices() {
+        const prices = {};
+        document.querySelectorAll('#sizePricesContainer input[data-size]').forEach(input => {
+            const size = input.dataset.size;
+            const price = parseFloat(input.value) || parseFloat($('productPrice').value) || 0;
+            prices[size] = price;
+        });
+        return prices;
+    }
+
     // Product colors state
     let productColors = [];
 
@@ -497,6 +552,10 @@
         // Get image from hidden field (set by upload)
         const imageValue = $('productImage').value;
 
+        // Check if variable pricing is enabled
+        const variablePricing = $('variablePricingToggle').checked;
+        const sizePrices = variablePricing ? getSizePrices() : null;
+
         const productData = {
             id: editingProductId || 'prod-' + Date.now(),
             name: form.productName.value,
@@ -506,7 +565,9 @@
             sizes: sizes.length ? sizes : ['S', 'M', 'L'],
             colors: [...productColors],
             notes: form.productNotes.value || '',
-            inventory: parseInt(form.productInventory.value) || 0
+            inventory: parseInt(form.productInventory.value) || 0,
+            variablePricing: variablePricing,
+            sizePrices: sizePrices
         };
 
         if (editingProductId) {
@@ -528,6 +589,8 @@
         productColors = [];
         renderColorTags();
         resetProductImagePreview();
+        $('variablePricingToggle').checked = false;
+        $('sizePricesContainer').style.display = 'none';
 
         showToast('Product saved!');
     }
@@ -556,6 +619,25 @@
         // Set image preview
         if (p.image) {
             setProductImagePreview(p.image);
+        }
+
+        // Set variable pricing toggle
+        const hasVariablePricing = p.variablePricing && p.sizePrices;
+        $('variablePricingToggle').checked = hasVariablePricing;
+
+        if (hasVariablePricing) {
+            $('sizePricesContainer').style.display = 'block';
+            // First update to create the inputs
+            updateSizePrices();
+            // Then populate with saved values
+            setTimeout(() => {
+                Object.entries(p.sizePrices).forEach(([size, price]) => {
+                    const input = document.querySelector(`#sizePricesContainer input[data-size="${size}"]`);
+                    if (input) input.value = price;
+                });
+            }, 50);
+        } else {
+            $('sizePricesContainer').style.display = 'none';
         }
 
         $('productFormTitle').textContent = 'Edit Product';
@@ -858,7 +940,9 @@
         addColor,
         removeColor,
         addCategory,
-        deleteCategory
+        deleteCategory,
+        toggleVariablePricing,
+        updateSizePrices
     };
 
     // Initialize on DOM ready

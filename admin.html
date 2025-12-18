@@ -127,11 +127,28 @@
             <div class="form-group">
               <label>Available Sizes</label>
               <div id="sizesContainer" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
-                <label class="size-check"><input type="checkbox" name="sizes" value="XS"> XS</label>
-                <label class="size-check"><input type="checkbox" name="sizes" value="S" checked> S</label>
-                <label class="size-check"><input type="checkbox" name="sizes" value="M" checked> M</label>
-                <label class="size-check"><input type="checkbox" name="sizes" value="L" checked> L</label>
-                <label class="size-check"><input type="checkbox" name="sizes" value="XL"> XL</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="XS"
+                    onchange="AdminPanel.updateSizePrices()"> XS</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="S" checked
+                    onchange="AdminPanel.updateSizePrices()"> S</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="M" checked
+                    onchange="AdminPanel.updateSizePrices()"> M</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="L" checked
+                    onchange="AdminPanel.updateSizePrices()"> L</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="XL"
+                    onchange="AdminPanel.updateSizePrices()"> XL</label>
+              </div>
+            </div>
+
+            <!-- Variable Pricing Toggle -->
+            <div class="form-group">
+              <label class="toggle-label">
+                <input type="checkbox" id="variablePricingToggle" onchange="AdminPanel.toggleVariablePricing()">
+                <span class="toggle-switch"></span>
+                <span>Different price per size</span>
+              </label>
+              <div id="sizePricesContainer" style="display:none;margin-top:12px;">
+                <!-- Will be populated dynamically -->
               </div>
             </div>
 
