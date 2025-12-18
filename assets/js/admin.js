@@ -398,20 +398,51 @@
     `).join('');
     }
 
+    // Product colors state
+    let productColors = [];
+
+    function addColor() {
+        const input = $('colorInput');
+        const color = input.value.trim();
+        if (color && !productColors.includes(color)) {
+            productColors.push(color);
+            renderColorTags();
+            input.value = '';
+        }
+    }
+
+    function removeColor(idx) {
+        productColors.splice(idx, 1);
+        renderColorTags();
+    }
+
+    function renderColorTags() {
+        const container = $('colorTags');
+        if (!container) return;
+        container.innerHTML = productColors.map((c, i) =>
+            `<span class="color-tag">${c} <button type="button" onclick="AdminPanel.removeColor(${i})">×</button></span>`
+        ).join('');
+    }
+
     function handleProductSubmit(e) {
         e.preventDefault();
         const form = e.target;
-        const sizesStr = form.productSizes.value;
-        const colorsStr = form.productColors.value;
+
+        // Get sizes from checkboxes
+        const sizeCheckboxes = form.querySelectorAll('input[name="sizes"]:checked');
+        const sizes = Array.from(sizeCheckboxes).map(cb => cb.value);
+
+        // Get image from hidden field (set by upload)
+        const imageValue = $('productImage').value;
 
         const productData = {
             id: editingProductId || 'prod-' + Date.now(),
             name: form.productName.value,
             price: parseFloat(form.productPrice.value) || 0,
             category: form.productCategory.value,
-            image: form.productImage.value || 'assets/img/IMG_20250918_220658-removebg-preview.png',
-            sizes: sizesStr ? sizesStr.split(',').map(s => s.trim()) : ['S', 'M', 'L'],
-            colors: colorsStr ? colorsStr.split(',').map(c => c.trim()) : [],
+            image: imageValue || 'assets/img/IMG_20250918_220658-removebg-preview.png',
+            sizes: sizes.length ? sizes : ['S', 'M', 'L'],
+            colors: [...productColors],
             notes: form.productNotes.value || '',
             inventory: parseInt(form.productInventory.value) || 0
         };
@@ -429,7 +460,13 @@
         saveData();
         renderProducts();
         renderDashboard();
+
+        // Reset form
         form.reset();
+        productColors = [];
+        renderColorTags();
+        resetProductImagePreview();
+
         showToast('Product saved!');
     }
 
@@ -442,13 +479,53 @@
         $('productPrice').value = p.price;
         $('productCategory').value = p.category;
         $('productImage').value = p.image || '';
-        $('productSizes').value = (p.sizes || []).join(', ');
-        $('productColors').value = (p.colors || []).join(', ');
         $('productNotes').value = p.notes || '';
         $('productInventory').value = p.inventory || 0;
+
+        // Set size checkboxes
+        document.querySelectorAll('input[name="sizes"]').forEach(cb => {
+            cb.checked = (p.sizes || []).includes(cb.value);
+        });
+
+        // Set color tags
+        productColors = [...(p.colors || [])];
+        renderColorTags();
+
+        // Set image preview
+        if (p.image) {
+            setProductImagePreview(p.image);
+        }
+
         $('productFormTitle').textContent = 'Edit Product';
         $('productSubmitBtn').textContent = 'Update Product';
         $('productsPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function setProductImagePreview(src) {
+        const preview = $('productImagePreview');
+        if (preview) {
+            preview.innerHTML = `<img src="${src}" alt="Preview" style="max-width:200px;max-height:200px;border-radius:8px;">`;
+        }
+        $('productImage').value = src;
+    }
+
+    function resetProductImagePreview() {
+        const preview = $('productImagePreview');
+        if (preview) {
+            preview.innerHTML = `<span class="upload-icon">📷</span><p>Click or drag image here</p>`;
+        }
+        $('productImage').value = '';
+    }
+
+    function handleProductImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+            setProductImagePreview(ev.target.result);
+        };
+        reader.readAsDataURL(file);
     }
 
     function deleteProduct(id) {
@@ -683,6 +760,29 @@
         // Products form
         $('productForm').addEventListener('submit', handleProductSubmit);
 
+        // Product image upload
+        const productImageUpload = $('productImageUpload');
+        const productImageFile = $('productImageFile');
+        if (productImageUpload && productImageFile) {
+            productImageUpload.addEventListener('click', () => productImageFile.click());
+            productImageUpload.addEventListener('dragover', e => {
+                e.preventDefault();
+                productImageUpload.style.borderColor = 'var(--teal)';
+            });
+            productImageUpload.addEventListener('dragleave', () => {
+                productImageUpload.style.borderColor = 'var(--tan)';
+            });
+            productImageUpload.addEventListener('drop', e => {
+                e.preventDefault();
+                productImageUpload.style.borderColor = 'var(--tan)';
+                if (e.dataTransfer.files.length) {
+                    productImageFile.files = e.dataTransfer.files;
+                    handleProductImageUpload({ target: productImageFile });
+                }
+            });
+            productImageFile.addEventListener('change', handleProductImageUpload);
+        }
+
     }
 
     // ===== PUBLIC API =====
@@ -692,7 +792,9 @@
         deleteImage,
         updateValueCard,
         editProduct,
-        deleteProduct
+        deleteProduct,
+        addColor,
+        removeColor
     };
 
     // Initialize on DOM ready

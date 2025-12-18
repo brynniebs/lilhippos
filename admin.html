@@ -104,36 +104,60 @@
                   required />
               </div>
             </div>
+
             <div class="form-row">
               <div class="form-group">
-                <label for="productCategory">Category</label>
-                <select id="productCategory" name="productCategory">
-                  <option value="beaded-collars">Beaded Collars</option>
-                  <option value="bowties">Bowties</option>
-                  <option value="bandanas">Bandanas</option>
-                  <option value="shirt-collars">Shirt Collars</option>
-                </select>
+                <label>Category</label>
+                <div style="display:flex;gap:8px;">
+                  <select id="productCategory" name="productCategory" style="flex:1;">
+                    <option value="beaded-collars">Beaded Collars</option>
+                    <option value="bowties">Bowties</option>
+                    <option value="bandanas">Bandanas</option>
+                    <option value="shirt-collars">Shirt Collars</option>
+                  </select>
+                </div>
               </div>
               <div class="form-group">
                 <label for="productInventory">Inventory Count</label>
                 <input type="number" id="productInventory" name="productInventory" min="0" placeholder="10" />
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="productSizes">Available Sizes (comma-separated)</label>
-                <input type="text" id="productSizes" name="productSizes" placeholder="XS, S, M, L" />
-              </div>
-              <div class="form-group">
-                <label for="productColors">Colors (comma-separated)</label>
-                <input type="text" id="productColors" name="productColors" placeholder="Rose, Berry, Blue" />
-              </div>
-            </div>
+
+            <!-- Sizes with checkboxes -->
             <div class="form-group">
-              <label for="productImage">Image Path (in assets/img/)</label>
-              <input type="text" id="productImage" name="productImage"
-                placeholder="assets/img/products/rose-collar.jpg" />
+              <label>Available Sizes</label>
+              <div id="sizesContainer" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                <label class="size-check"><input type="checkbox" name="sizes" value="XS"> XS</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="S" checked> S</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="M" checked> M</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="L" checked> L</label>
+                <label class="size-check"><input type="checkbox" name="sizes" value="XL"> XL</label>
+              </div>
             </div>
+
+            <!-- Colors with tag input -->
+            <div class="form-group">
+              <label>Colors</label>
+              <div id="colorTags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;"></div>
+              <div style="display:flex;gap:8px;">
+                <input type="text" id="colorInput" placeholder="Type a color and press Add" style="flex:1;" />
+                <button type="button" class="btn btn-secondary btn-small" onclick="AdminPanel.addColor()">+ Add</button>
+              </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group">
+              <label>Product Image</label>
+              <div id="productImageUpload" class="upload-area" style="padding:20px;">
+                <input type="file" id="productImageFile" accept="image/*" style="display:none;" />
+                <div id="productImagePreview" style="text-align:center;">
+                  <span class="upload-icon">📷</span>
+                  <p>Click or drag image here</p>
+                </div>
+              </div>
+              <input type="hidden" id="productImage" name="productImage" />
+            </div>
+
             <div class="form-group">
               <label for="productNotes">Notes / Description</label>
               <textarea id="productNotes" name="productNotes" rows="2" placeholder="Product details..."></textarea>
