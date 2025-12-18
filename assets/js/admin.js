@@ -433,9 +433,7 @@
         // Content save
         $('saveContentBtn').addEventListener('click', saveContent);
 
-        // Export/Import
-        $('exportBtn').addEventListener('click', exportData);
-        $('importInput').addEventListener('change', importData);
+
     }
 
     // ===== PUBLIC API =====
