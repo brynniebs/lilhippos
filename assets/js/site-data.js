@@ -90,6 +90,7 @@
         window.BB_EVENTS = filterPastEvents(allEvents);
         window.BB_GALLERY = cloudData?.gallery || DEFAULTS.gallery;
         window.BB_CONTENT = cloudData?.content || DEFAULTS.content;
+        window.BB_PRODUCTS = cloudData?.products || null; // Products from cloud
 
         // Dispatch event so other scripts know data is ready
         document.dispatchEvent(new CustomEvent('siteDataReady'));

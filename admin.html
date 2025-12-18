@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap"
     rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="assets/css/admin.css" />
 </head>
 
@@ -45,6 +46,9 @@
 
     <!-- Tabs -->
     <nav class="admin-tabs">
+      <button class="tab-btn" data-tab="dashboardPanel">📊 Dashboard</button>
+      <button class="tab-btn" data-tab="productsPanel">🛍️ Products</button>
+      <button class="tab-btn" data-tab="ordersPanel">📦 Orders</button>
       <button class="tab-btn active" data-tab="eventsPanel">📅 Events</button>
       <button class="tab-btn" data-tab="galleryPanel">🖼️ Gallery</button>
       <button class="tab-btn" data-tab="contentPanel">✏️ Site Content</button>
@@ -52,6 +56,112 @@
 
     <!-- Content Area -->
     <div class="admin-content">
+
+      <!-- DASHBOARD PANEL -->
+      <div class="tab-panel" id="dashboardPanel">
+        <div class="dashboard-grid">
+          <div class="admin-card stat-card">
+            <h4>Total Revenue</h4>
+            <p class="stat-value" id="statRevenue">$0.00</p>
+          </div>
+          <div class="admin-card stat-card">
+            <h4>Orders</h4>
+            <p class="stat-value" id="statOrders">0</p>
+          </div>
+          <div class="admin-card stat-card">
+            <h4>Products</h4>
+            <p class="stat-value" id="statProducts">0</p>
+          </div>
+          <div class="admin-card stat-card">
+            <h4>Low Stock</h4>
+            <p class="stat-value" id="statLowStock">0</p>
+          </div>
+        </div>
+        <div class="admin-card">
+          <h3>📈 Sales This Month</h3>
+          <canvas id="salesChart" height="200"></canvas>
+        </div>
+        <div class="admin-card">
+          <h3>🕐 Recent Orders</h3>
+          <div id="recentOrdersList"></div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS PANEL -->
+      <div class="tab-panel" id="productsPanel">
+        <div class="admin-card">
+          <h3 id="productFormTitle">Add New Product</h3>
+          <form id="productForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productName">Product Name *</label>
+                <input type="text" id="productName" name="productName" placeholder="e.g., Beaded Collar - Rose Mix"
+                  required />
+              </div>
+              <div class="form-group">
+                <label for="productPrice">Price ($) *</label>
+                <input type="number" id="productPrice" name="productPrice" step="0.01" min="0" placeholder="24.00"
+                  required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productCategory">Category</label>
+                <select id="productCategory" name="productCategory">
+                  <option value="beaded-collars">Beaded Collars</option>
+                  <option value="bowties">Bowties</option>
+                  <option value="bandanas">Bandanas</option>
+                  <option value="shirt-collars">Shirt Collars</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="productInventory">Inventory Count</label>
+                <input type="number" id="productInventory" name="productInventory" min="0" placeholder="10" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productSizes">Available Sizes (comma-separated)</label>
+                <input type="text" id="productSizes" name="productSizes" placeholder="XS, S, M, L" />
+              </div>
+              <div class="form-group">
+                <label for="productColors">Colors (comma-separated)</label>
+                <input type="text" id="productColors" name="productColors" placeholder="Rose, Berry, Blue" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="productImage">Image Path (in assets/img/)</label>
+              <input type="text" id="productImage" name="productImage"
+                placeholder="assets/img/products/rose-collar.jpg" />
+            </div>
+            <div class="form-group">
+              <label for="productNotes">Notes / Description</label>
+              <textarea id="productNotes" name="productNotes" rows="2" placeholder="Product details..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="productSubmitBtn">Add Product</button>
+          </form>
+        </div>
+        <div class="admin-card">
+          <h3>Your Products</h3>
+          <div class="item-list" id="productsList"></div>
+        </div>
+      </div>
+
+      <!-- ORDERS PANEL -->
+      <div class="tab-panel" id="ordersPanel">
+        <div class="admin-card">
+          <h3>📋 Custom Order Requests</h3>
+          <div id="customOrdersList">
+            <p class="text-center" style="color:#666;padding:20px;">No custom orders yet.</p>
+          </div>
+        </div>
+        <div class="admin-card">
+          <h3>🛒 Shop Orders</h3>
+          <div id="shopOrdersList">
+            <p class="text-center" style="color:#666;padding:20px;">No shop orders yet.</p>
+          </div>
+        </div>
+      </div>
 
       <!-- EVENTS PANEL -->
       <div class="tab-panel active" id="eventsPanel">

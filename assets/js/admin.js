@@ -12,7 +12,9 @@
         AUTH: 'BB_ADMIN_AUTH',
         EVENTS: 'BB_EVENTS',
         GALLERY: 'BB_GALLERY',
-        CONTENT: 'BB_CONTENT'
+        CONTENT: 'BB_CONTENT',
+        PRODUCTS: 'BB_PRODUCTS',
+        ORDERS: 'BB_ORDERS'
     };
 
     // ===== Default Data =====
@@ -45,11 +47,25 @@
         aboutValues: ['Comfort and safety come first.', 'Personalization is part of the fun.', 'We source thoughtfully and assemble by hand.']
     };
 
+    const DEFAULT_PRODUCTS = [
+        { id: 'bc-rose', name: 'Beaded Collar – Rose Mix', price: 24.00, category: 'beaded-collars', image: 'assets/img/IMG_20250918_220658-removebg-preview.png', sizes: ['XS', 'S', 'M', 'L'], colors: ['Rose'], notes: '', inventory: 10 },
+        { id: 'bc-berry', name: 'Beaded Collar – Berry Pop', price: 24.00, category: 'beaded-collars', image: 'assets/img/IMG_20250918_220658-removebg-preview.png', sizes: ['XS', 'S', 'M', 'L'], colors: ['Berry'], notes: '', inventory: 10 },
+        { id: 'bw-classic', name: 'Bowtie – Classic Check', price: 16.00, category: 'bowties', image: 'assets/img/IMG_20250918_220658-removebg-preview.png', sizes: ['S', 'M', 'L'], colors: ['Multi'], notes: '', inventory: 5 },
+        { id: 'bd-peach', name: 'Bandana – Peach Plaid', price: 14.00, category: 'bandanas', image: 'assets/img/IMG_20250918_220658-removebg-preview.png', sizes: ['S', 'M', 'L'], colors: ['Peach'], notes: '', inventory: 8 },
+        { id: 'sc-denim', name: 'Shirt Collar – Soft Denim', price: 18.00, category: 'shirt-collars', image: 'assets/img/IMG_20250918_220658-removebg-preview.png', sizes: ['S', 'M', 'L'], colors: ['Denim'], notes: '', inventory: 6 }
+    ];
+
+    const DEFAULT_ORDERS = [];
+
     // ===== State =====
     let events = [];
     let gallery = [];
     let content = {};
+    let products = [];
+    let orders = [];
     let editingEventId = null;
+    let editingProductId = null;
+    let salesChart = null;
 
     // ===== DOM Elements =====
     const $ = id => document.getElementById(id);
@@ -69,10 +85,14 @@
                 events = cloudData.events || [...DEFAULT_EVENTS];
                 gallery = cloudData.gallery || [...DEFAULT_GALLERY];
                 content = cloudData.content || { ...DEFAULT_CONTENT };
+                products = cloudData.products || [...DEFAULT_PRODUCTS];
+                orders = cloudData.orders || [...DEFAULT_ORDERS];
                 // Also save to localStorage as backup
                 localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
                 localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
                 localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(content));
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
                 return;
             }
         }
@@ -80,6 +100,8 @@
         events = JSON.parse(localStorage.getItem(STORAGE_KEYS.EVENTS)) || [...DEFAULT_EVENTS];
         gallery = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY)) || [...DEFAULT_GALLERY];
         content = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTENT)) || { ...DEFAULT_CONTENT };
+        products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [...DEFAULT_PRODUCTS];
+        orders = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS)) || [...DEFAULT_ORDERS];
     }
 
     async function saveData() {
@@ -87,10 +109,12 @@
         localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
         localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(content));
+        localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+        localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
 
         // Then save to cloud for everyone
         if (window.CloudSync && CloudSync.isConfigured()) {
-            const success = await CloudSync.save({ events, gallery, content });
+            const success = await CloudSync.save({ events, gallery, content, products, orders });
             if (success) {
                 console.log('Data synced to cloud!');
             }
@@ -131,6 +155,9 @@
         renderEvents();
         renderGallery();
         renderContent();
+        renderProducts();
+        renderOrders();
+        renderDashboard();
     }
 
     // ===== Tab Navigation =====
@@ -346,6 +373,226 @@
         }
     }
 
+    // ===== PRODUCTS MANAGEMENT =====
+    function renderProducts() {
+        const list = $('productsList');
+        if (!list) return;
+
+        if (products.length === 0) {
+            list.innerHTML = '<p class="text-center" style="color:#666;padding:20px;">No products yet. Add your first product above!</p>';
+            return;
+        }
+
+        list.innerHTML = products.map(p => `
+      <div class="item-card" data-id="${p.id}">
+        <img src="${p.image || 'assets/img/IMG_20250918_220658-removebg-preview.png'}" alt="${p.name}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+        <div class="item-info">
+          <p class="item-title">${p.name}</p>
+          <p class="item-meta">$${p.price.toFixed(2)} • ${p.category} • Stock: ${p.inventory || 0}</p>
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-secondary btn-small" onclick="AdminPanel.editProduct('${p.id}')">Edit</button>
+          <button class="btn btn-danger btn-small" onclick="AdminPanel.deleteProduct('${p.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+    }
+
+    function handleProductSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const sizesStr = form.productSizes.value;
+        const colorsStr = form.productColors.value;
+
+        const productData = {
+            id: editingProductId || 'prod-' + Date.now(),
+            name: form.productName.value,
+            price: parseFloat(form.productPrice.value) || 0,
+            category: form.productCategory.value,
+            image: form.productImage.value || 'assets/img/IMG_20250918_220658-removebg-preview.png',
+            sizes: sizesStr ? sizesStr.split(',').map(s => s.trim()) : ['S', 'M', 'L'],
+            colors: colorsStr ? colorsStr.split(',').map(c => c.trim()) : [],
+            notes: form.productNotes.value || '',
+            inventory: parseInt(form.productInventory.value) || 0
+        };
+
+        if (editingProductId) {
+            const idx = products.findIndex(p => p.id === editingProductId);
+            if (idx > -1) products[idx] = productData;
+            editingProductId = null;
+            $('productFormTitle').textContent = 'Add New Product';
+            $('productSubmitBtn').textContent = 'Add Product';
+        } else {
+            products.push(productData);
+        }
+
+        saveData();
+        renderProducts();
+        renderDashboard();
+        form.reset();
+        showToast('Product saved!');
+    }
+
+    function editProduct(id) {
+        const p = products.find(prod => prod.id === id);
+        if (!p) return;
+
+        editingProductId = id;
+        $('productName').value = p.name;
+        $('productPrice').value = p.price;
+        $('productCategory').value = p.category;
+        $('productImage').value = p.image || '';
+        $('productSizes').value = (p.sizes || []).join(', ');
+        $('productColors').value = (p.colors || []).join(', ');
+        $('productNotes').value = p.notes || '';
+        $('productInventory').value = p.inventory || 0;
+        $('productFormTitle').textContent = 'Edit Product';
+        $('productSubmitBtn').textContent = 'Update Product';
+        $('productsPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function deleteProduct(id) {
+        if (!confirm('Delete this product?')) return;
+        products = products.filter(p => p.id !== id);
+        saveData();
+        renderProducts();
+        renderDashboard();
+        showToast('Product deleted');
+    }
+
+    // ===== ORDERS MANAGEMENT =====
+    function renderOrders() {
+        const customList = $('customOrdersList');
+        const shopList = $('shopOrdersList');
+
+        if (customList) {
+            const customOrders = orders.filter(o => o.type === 'custom');
+            if (customOrders.length === 0) {
+                customList.innerHTML = '<p class="text-center" style="color:#666;padding:20px;">No custom orders yet.</p>';
+            } else {
+                customList.innerHTML = customOrders.map(o => `
+          <div class="item-card">
+            <div class="item-info">
+              <p class="item-title">${o.name} - ${o.email}</p>
+              <p class="item-meta">${o.pet || 'No pet name'} • ${o.size} • ${o.hardware}</p>
+              <p class="item-meta">${o.colors || 'No color specified'}</p>
+            </div>
+            <div class="item-actions">
+              <span style="background:${o.status === 'paid' ? 'var(--success)' : o.status === 'quoted' ? 'var(--tan)' : 'var(--blush)'};color:#fff;padding:4px 10px;border-radius:12px;font-size:0.8rem;">${o.status || 'pending'}</span>
+            </div>
+          </div>
+        `).join('');
+            }
+        }
+
+        if (shopList) {
+            const shopOrders = orders.filter(o => o.type === 'shop');
+            if (shopOrders.length === 0) {
+                shopList.innerHTML = '<p class="text-center" style="color:#666;padding:20px;">No shop orders yet.</p>';
+            } else {
+                shopList.innerHTML = shopOrders.map(o => `
+          <div class="item-card">
+            <div class="item-info">
+              <p class="item-title">Order #${o.id.toString().slice(-6)}</p>
+              <p class="item-meta">${o.items?.length || 0} items • $${(o.total || 0).toFixed(2)}</p>
+            </div>
+            <div class="item-actions">
+              <span style="background:${o.status === 'paid' ? 'var(--success)' : 'var(--blush)'};color:#fff;padding:4px 10px;border-radius:12px;font-size:0.8rem;">${o.status || 'pending'}</span>
+            </div>
+          </div>
+        `).join('');
+            }
+        }
+    }
+
+    // ===== DASHBOARD =====
+    function renderDashboard() {
+        // Calculate stats
+        const totalRevenue = orders.filter(o => o.status === 'paid').reduce((sum, o) => sum + (o.total || 0), 0);
+        const orderCount = orders.length;
+        const productCount = products.length;
+        const lowStock = products.filter(p => (p.inventory || 0) < 5).length;
+
+        // Update stat cards
+        if ($('statRevenue')) $('statRevenue').textContent = '$' + totalRevenue.toFixed(2);
+        if ($('statOrders')) $('statOrders').textContent = orderCount;
+        if ($('statProducts')) $('statProducts').textContent = productCount;
+        if ($('statLowStock')) $('statLowStock').textContent = lowStock;
+
+        // Recent orders
+        const recentList = $('recentOrdersList');
+        if (recentList) {
+            const recent = orders.slice(-5).reverse();
+            if (recent.length === 0) {
+                recentList.innerHTML = '<p class="text-center" style="color:#666;padding:20px;">No orders yet.</p>';
+            } else {
+                recentList.innerHTML = recent.map(o => `
+          <div class="item-card">
+            <div class="item-info">
+              <p class="item-title">${o.type === 'custom' ? 'Custom Order' : 'Shop Order'} #${o.id.toString().slice(-6)}</p>
+              <p class="item-meta">$${(o.total || 0).toFixed(2)} • ${o.status || 'pending'}</p>
+            </div>
+          </div>
+        `).join('');
+            }
+        }
+
+        // Sales chart
+        renderSalesChart();
+    }
+
+    function renderSalesChart() {
+        const canvas = $('salesChart');
+        if (!canvas) return;
+
+        // Generate mock data for demo (replace with real order data)
+        const labels = [];
+        const data = [];
+        const today = new Date();
+
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            labels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+            // Count orders for this day
+            const dayOrders = orders.filter(o => {
+                const orderDate = new Date(o.date || o.id);
+                return orderDate.toDateString() === d.toDateString() && o.status === 'paid';
+            });
+            data.push(dayOrders.reduce((sum, o) => sum + (o.total || 0), 0));
+        }
+
+        if (salesChart) {
+            salesChart.data.labels = labels;
+            salesChart.data.datasets[0].data = data;
+            salesChart.update();
+        } else {
+            salesChart = new Chart(canvas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: data,
+                        backgroundColor: 'rgba(46, 127, 134, 0.7)',
+                        borderColor: 'rgba(46, 127, 134, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+    }
+
     // ===== EXPORT / IMPORT =====
     function exportData() {
         const data = {
@@ -433,6 +680,8 @@
         // Content save
         $('saveContentBtn').addEventListener('click', saveContent);
 
+        // Products form
+        $('productForm').addEventListener('submit', handleProductSubmit);
 
     }
 
@@ -441,7 +690,9 @@
         editEvent,
         deleteEvent,
         deleteImage,
-        updateValueCard
+        updateValueCard,
+        editProduct,
+        deleteProduct
     };
 
     // Initialize on DOM ready
