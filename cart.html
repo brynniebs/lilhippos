@@ -1,18 +1,21 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Cart • Brynnie B’s</title>
+  <title>Your Cart • Brynnie B's</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
+
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="index.html"><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s" height="48" /></a>
+      <a class="brand" href="index.html"><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B's" height="48" /></a>
       <nav class="main-nav" aria-label="Primary">
         <a href="index.html" class="">Home</a>
         <a href="shop.html" class="">Shop</a>
@@ -27,27 +30,41 @@
     </div>
   </header>
 
-  
-<main class="container">
-  <h1>Your Cart</h1>
-  <div id="cartRoot"></div>
-  <div class="cart-actions">
-    <a class="btn btn-outline" href="shop.html">Continue Shopping</a>
-    <button class="btn btn-primary" id="checkoutBtn">Checkout</button>
-    <p class="small mute">(Simple demo checkout: generates an order email. Stripe/Shop integration can be added later.)</p>
-  </div>
-</main>
+  <main class="container">
+    <h1>Your Cart</h1>
+    <div id="cartRoot"></div>
 
+    <div class="cart-actions" id="cartActions" style="display:none;">
+      <a class="btn btn-outline" href="shop.html">Continue Shopping</a>
+
+      <!-- PayPal Button Container -->
+      <div id="paypal-button-container" style="margin-top: 20px; max-width: 400px;"></div>
+
+      <p class="small mute" style="margin-top: 16px;">Secure checkout powered by PayPal. You can pay with PayPal or
+        credit/debit card.</p>
+    </div>
+
+    <div id="cartEmpty" style="display:none; text-align:center; padding: 40px 0;">
+      <p>Your cart is empty.</p>
+      <a class="btn btn-primary" href="shop.html">Start Shopping</a>
+    </div>
+  </main>
 
   <footer class="site-footer">
     <div class="container footer-grid">
-      <div><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B’s" height="40" /></div>
-      <div class="small">© <span id="year"></span> Brynnie B’s Boutique & More</div>
+      <div><img src="assets/img/Brynnie-Banner.png" alt="Brynnie B's" height="40" /></div>
+      <div class="small">© <span id="year"></span> Brynnie B's Boutique & More</div>
+      <div class="small"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></div>
     </div>
   </footer>
 
+  <!-- PayPal SDK -->
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=AcLlIrQtfuB4e6rmyv5iHsQbbV2H-ferEwLP1krfzCSaFecjfsE4fGwLjyd03M1N2UGOLaG8N9vowYcQ&currency=USD"></script>
+
   <script src="assets/js/cart.js"></script>
-<script>window.renderCart && window.renderCart();</script>
+  <script>window.renderCart && window.renderCart();</script>
   <script src="assets/js/site.js"></script>
 </body>
+
 </html>
