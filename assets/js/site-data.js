@@ -63,12 +63,31 @@
         }
     }
 
+    // Filter out past events (auto-archive)
+    function filterPastEvents(events) {
+        if (!Array.isArray(events)) return events;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return events.filter(ev => {
+            // Check if event has endDate (new format)
+            if (ev.endDate) {
+                const endDate = new Date(ev.endDate + 'T23:59:59');
+                return endDate >= today;
+            }
+            // For legacy events without endDate, keep them
+            return true;
+        });
+    }
+
     // Initialize and expose data
     async function init() {
         const cloudData = await loadCloudData();
 
-        // Set global data objects
-        window.BB_EVENTS = cloudData?.events || DEFAULTS.events;
+        // Set global data objects with past event filtering
+        const allEvents = cloudData?.events || DEFAULTS.events;
+        window.BB_EVENTS = filterPastEvents(allEvents);
         window.BB_GALLERY = cloudData?.gallery || DEFAULTS.gallery;
         window.BB_CONTENT = cloudData?.content || DEFAULTS.content;
 

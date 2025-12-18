@@ -65,9 +65,18 @@
           <form id="eventForm">
             <div class="form-row">
               <div class="form-group">
-                <label for="eventDate">Date & Time</label>
-                <input type="text" id="eventDate" name="eventDate" placeholder="e.g., Nov 28–30 · Fri 3pm–8pm"
-                  required />
+                <label for="eventStartDate">Start Date</label>
+                <input type="date" id="eventStartDate" name="eventStartDate" required />
+              </div>
+              <div class="form-group">
+                <label for="eventEndDate">End Date (leave blank for single day)</label>
+                <input type="date" id="eventEndDate" name="eventEndDate" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="eventTimes">Times (e.g., 9am-3pm or Fri 3pm-8pm, Sat 10am-4pm)</label>
+                <input type="text" id="eventTimes" name="eventTimes" placeholder="e.g., 9am-3pm" />
               </div>
               <div class="form-group">
                 <label for="eventTitle">Event Name</label>

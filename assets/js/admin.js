@@ -169,12 +169,40 @@
     `).join('');
     }
 
+    // Format date for display (e.g., "Nov 28-30" or "Dec 25")
+    function formatEventDate(startDate, endDate, times) {
+        const start = new Date(startDate + 'T00:00:00');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let dateStr = `${months[start.getMonth()]} ${start.getDate()}`;
+
+        if (endDate) {
+            const end = new Date(endDate + 'T00:00:00');
+            if (start.getMonth() === end.getMonth()) {
+                dateStr = `${months[start.getMonth()]} ${start.getDate()}-${end.getDate()}`;
+            } else {
+                dateStr = `${months[start.getMonth()]} ${start.getDate()} - ${months[end.getMonth()]} ${end.getDate()}`;
+            }
+        }
+
+        if (times) {
+            dateStr += ` · ${times}`;
+        }
+
+        return dateStr;
+    }
+
     function handleEventSubmit(e) {
         e.preventDefault();
         const form = e.target;
+        const startDate = form.eventStartDate.value;
+        const endDate = form.eventEndDate.value || null;
+        const times = form.eventTimes.value || '';
+
         const eventData = {
             id: editingEventId || Date.now(),
-            date: form.eventDate.value,
+            date: formatEventDate(startDate, endDate, times),
+            startDate: startDate,
+            endDate: endDate || startDate,
             title: form.eventTitle.value,
             city: form.eventCity.value,
             map: form.eventMap.value || '#'
@@ -201,7 +229,9 @@
         if (!ev) return;
 
         editingEventId = id;
-        $('eventDate').value = ev.date;
+        $('eventStartDate').value = ev.startDate || '';
+        $('eventEndDate').value = ev.endDate || '';
+        $('eventTimes').value = '';
         $('eventTitle').value = ev.title;
         $('eventCity').value = ev.city;
         $('eventMap').value = ev.map;
