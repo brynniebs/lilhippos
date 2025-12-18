@@ -10,6 +10,14 @@ const DEFAULT_PRODUCTS = [
   { id: 'sc-denim', name: 'Shirt Collar – Soft Denim', price: 18.00, category: 'shirt-collars', image: 'assets/img/IMG_20250918_220658-removebg-preview.png', sizes: ['S', 'M', 'L'], colors: ['Denim'], inventory: 6 }
 ];
 
+// Default categories (fallback)
+const DEFAULT_CATEGORIES = [
+  { id: 'beaded-collars', name: 'Beaded Collars' },
+  { id: 'bowties', name: 'Bowties' },
+  { id: 'bandanas', name: 'Bandanas' },
+  { id: 'shirt-collars', name: 'Shirt Collars' }
+];
+
 // Get price for a product based on size (handles variable pricing)
 function getProductPrice(product, size) {
   if (product.variablePricing && product.sizePrices && product.sizePrices[size]) {
@@ -21,15 +29,23 @@ function getProductPrice(product, size) {
 window.renderProducts = function () {
   const root = document.getElementById('productsRoot'); if (!root) return;
 
-  // Use cloud products if available, otherwise defaults
+  // Use cloud data if available, otherwise defaults
   const products = window.BB_PRODUCTS || DEFAULT_PRODUCTS;
+  const categories = window.BB_CATEGORIES || DEFAULT_CATEGORIES;
 
   const hash = (location.hash || '').replace('#', '');
-  const grouped = products.reduce((m, p) => { (m[p.category] = m[p.category] || []).push(p); return m; }, {});
-  const order = ['beaded-collars', 'bowties', 'bandanas', 'shirt-collars'];
 
-  root.innerHTML = order.map(cat => {
-    const list = (grouped[cat] || [])
+  // Group products by category
+  const grouped = products.reduce((m, p) => { (m[p.category] = m[p.category] || []).push(p); return m; }, {});
+
+  // Use dynamic category order from cloud (or defaults)
+  const categoryOrder = categories.map(c => c.id);
+
+  root.innerHTML = categoryOrder.map(catId => {
+    const category = categories.find(c => c.id === catId);
+    const catName = category ? category.name : catId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    const list = (grouped[catId] || [])
       .filter(p => !hash || p.category === hash)
       .filter(p => (p.inventory || 0) > 0) // Only show in-stock items
       .map(p => {
@@ -59,9 +75,17 @@ window.renderProducts = function () {
         </div>
       </article>`;
       }).join('');
-    const title = cat.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase());
-    return `<h2 id="${cat}">${title}</h2><div class="product-grid">${list || '<p>No items yet.</p>'}</div>`;
-  }).join('');
+
+    // Only show category if it has products
+    if (!list) return '';
+
+    return `<h2 id="${catId}">${catName}</h2><div class="product-grid">${list}</div>`;
+  }).filter(html => html).join('');
+
+  // Show message if no products at all
+  if (!root.innerHTML.trim()) {
+    root.innerHTML = '<p class="text-center" style="padding:40px;color:#666;">No products available yet. Check back soon!</p>';
+  }
 };
 
 // Update price display when size changes (for variable pricing)
