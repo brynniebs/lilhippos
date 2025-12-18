@@ -34,11 +34,8 @@
     <h1>Shop</h1>
     <p class="lead">Choose a category below, then personalize your pup’s new favorite.</p>
 
-    <div class="chip-row">
-      <a class="chip" href="#beaded-collars">Beaded Collars</a>
-      <a class="chip" href="#bowties">Bowties</a>
-      <a class="chip" href="#bandanas">Bandanas</a>
-      <a class="chip" href="#shirt-collars">Shirt Collars</a>
+    <div class="chip-row" id="categoryChips">
+      <!-- Dynamically populated from cloud categories -->
     </div>
 
     <!-- NOTE: FIXED — removed class="product-grid" here -->
@@ -58,10 +55,12 @@
   <script src="assets/js/site.js"></script>
   <script>
     document.addEventListener('siteDataReady', function () {
+      window.renderCategoryChips && window.renderCategoryChips();
       window.renderProducts && window.renderProducts();
     });
     // Fallback if siteDataReady already fired
     setTimeout(function () {
+      window.renderCategoryChips && window.renderCategoryChips();
       window.renderProducts && window.renderProducts();
     }, 300);
   </script>

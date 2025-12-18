@@ -26,6 +26,18 @@ function getProductPrice(product, size) {
   return product.price;
 }
 
+// Render category filter chips at top of shop page
+window.renderCategoryChips = function () {
+  const container = document.getElementById('categoryChips');
+  if (!container) return;
+
+  const categories = window.BB_CATEGORIES || DEFAULT_CATEGORIES;
+
+  container.innerHTML = categories.map(cat =>
+    `<a class="chip" href="#${cat.id}">${cat.name}</a>`
+  ).join('');
+};
+
 window.renderProducts = function () {
   const root = document.getElementById('productsRoot'); if (!root) return;
 
